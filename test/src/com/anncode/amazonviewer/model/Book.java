@@ -35,7 +35,7 @@ public class Book extends Publication implements IVisualizable {
 	public String isReaded() {
 		String leido = "";
 		if(readed == true) {
-			leido = "Sí";
+			leido = "Si";
 		}else {
 			leido = "No";
 		}
@@ -107,5 +107,54 @@ public class Book extends Publication implements IVisualizable {
 		
 		return books;
 	}
-	
+	public void view(){
+		setReaded(true);
+		Date dateI = startToSee(new Date());
+
+		for (int i = 0; i < 100000; i++) {
+			System.out.println("..........");
+		}
+
+		//Termine de verla
+		stopToSee(dateI, new Date());
+		System.out.println();
+		System.out.println("Leiste: " + toString());
+		System.out.println("Por: " + getTimeReaded() + " milisegundos");
+
+	}
+
+	public static  class Page{
+		private int id;
+		private int number;
+		private String content;
+
+		public Page(int number, String content) {
+			this.number = number;
+			this.content = content;
+		}
+
+		public int getId() {
+			return id;
+		}
+
+		public void setId(int id) {
+			this.id = id;
+		}
+
+		public int getNumber() {
+			return number;
+		}
+
+		public void setNumber(int number) {
+			this.number = number;
+		}
+
+		public String getContent() {
+			return content;
+		}
+
+		public void setContent(String content) {
+			this.content = content;
+		}
+	}
 }
