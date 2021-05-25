@@ -19,7 +19,7 @@ public interface MovieDAO extends IDBConnection {
             if(statement.executeUpdate(query) > 0){
                 System.out.println("Se marco en visto");
             }
-        }catch(SQLException e){
+        }catch(SQLException | ClassNotFoundException e){
             e.printStackTrace();
         }
         return movie;
@@ -51,7 +51,7 @@ public interface MovieDAO extends IDBConnection {
         return movies;
     }
 
-    private boolean getMovieViewed(PreparedStatement preparedStatement, Connection connection, int id_movie){
+    default boolean getMovieViewed(PreparedStatement preparedStatement, Connection connection, int id_movie){
         boolean viewed = false;
         String query= "SELECT * FROM " + TVIEWED +
                 " WHERE " + TVIEWED_IDMATERIAL + "= ?" +

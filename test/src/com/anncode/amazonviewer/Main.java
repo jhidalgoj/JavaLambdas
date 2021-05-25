@@ -6,6 +6,9 @@ import com.anncode.util.AmazonUtil;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 
 /**
@@ -94,9 +97,12 @@ public class Main {
             System.out.println(":: MOVIES ::");
             System.out.println();
 
-            for (int i = 0; i < movies.size(); i++) { //1. Movie 1
+            AtomicInteger atomicInteger = new AtomicInteger(1); //genera numero atomico unico e integro y entero
+            movies.forEach(m -> System.out.println(atomicInteger.getAndIncrement()+". "+ m.getTitle() + " Visto: " + m.isViewed()) );
+
+            /*for (int i = 0; i < movies.size(); i++) { //1. Movie 1
                 System.out.println(i+1 + ". " + movies.get(i).getTitle() + " Visto: " + movies.get(i).isViewed());
-            }
+            }*/
 
             System.out.println("0. Regresar al Menu");
             System.out.println();
@@ -247,16 +253,36 @@ public class Main {
         report.setNameFile("reporte");
         report.setExtension("txt");
         report.setTitle(":: VISTOS ::");
-        String contentReport = "";
+        StringBuilder contentReport = new StringBuilder();  //Cambio de String a StringBuilder para usar el Stream y que quede inmutable
 
-        for (Movie movie : movies) {
+        movies.stream()
+                .filter(m -> m.getIsViewed())
+                .forEach(m -> contentReport.append(m.toString() + "\n"));
+
+
+        /*for (Movie movie : movies) {
+
             if (movie.getIsViewed()) {
                 contentReport += movie.toString() + "\n";
 
             }
-        }
+        }*/
 
-        for (Serie serie : series) {
+        //Predicate<Serie> seriesViewed = s->s.getIsViewed();
+        //series.stream().filter(seriesViewed);
+
+        Consumer<Serie> seriesEach = s ->{
+            ArrayList<Chapter> chapters = s.getChapters();
+            chapters.stream().filter(chapter -> chapter.getIsViewed())
+                    .forEach(c -> contentReport.append(c.toString() + "\n"));
+        };
+
+        series.stream().forEach(seriesEach);
+
+        books.stream().filter(b -> b.getIsReaded()).forEach(b -> contentReport.append(b.toString() + "\n"));
+
+
+      /*  for (Serie serie : series) {
             ArrayList<Chapter> chapters = serie.getChapters();
             for (Chapter chapter : chapters) {
                 if (chapter.getIsViewed()) {
@@ -265,16 +291,14 @@ public class Main {
                 }
             }
         }
-
-
         for (Book book : books) {
             if (book.getIsReaded()) {
                 contentReport += book.toString() + "\n";
 
             }
-        }
+        }*/
 
-        report.setContent(contentReport);
+        report.setContent(contentReport.toString());
         report.makeReport();
         System.out.println("Reporte Generado");
         System.out.println();
